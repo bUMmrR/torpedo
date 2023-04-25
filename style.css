@@ -1,0 +1,17 @@
+table{
+    border-collapse: collapse;
+}
+td{
+    width: 50px;
+    border: solid black 1px;
+    margin: 0px;
+}
+tr{
+    height: 50px;
+    border: solid black 1px;
+    margin: 0px;
+}
+td:first-child{
+    border: none;
+
+}
