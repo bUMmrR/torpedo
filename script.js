@@ -1,4 +1,7 @@
 const cim = document.getElementById("cim")
+const emberJatekter = document.getElementById("jatekter-ember")
+const botJatekter = document.getElementById("jatekter-bot")
+
 
 
 function generalas(embere) { 
@@ -10,9 +13,10 @@ function generalas(embere) {
     for (let i = 0; i < sor; i++) { 
         var tr = document.createElement("tr");
         for (let j = 0; j < oszlop; j++) { 
+            
             let td = document.createElement("td");
 
-            if (i !=0 && j != 0) {
+            if (i !=0 && j != 0 && embere != "bot") {
                 td.setAttribute("onclick", "Katt(this)")
                 
             }
@@ -52,5 +56,19 @@ function Katt(td){
     td.appendChild(kep);
     td.setAttribute("onclick","")
 }
-generalas("ember");
-generalas("bot")
+
+function generalHajo(){
+    for (let i = 0; i < 10; i++) {
+        var temp = document.createElement("p")
+        temp.innerText = "igen"
+        emberJatekter.appendChild(temp)
+    }
+}
+
+function main(){
+    generalas("ember");
+    generalas("bot");
+    generalHajo();
+}
+
+main();
