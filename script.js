@@ -49,8 +49,6 @@ function Katt(td){
     td.style.backgroundColor = "var(--marlott)";
     var kep = document.createElement("img")
     kep.src = "explo.png";
-    // kep.height = 50;
-    // kep.width = 50;
     td.appendChild(kep);
     td.setAttribute("onclick","")
 }
