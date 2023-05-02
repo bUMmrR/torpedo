@@ -16,9 +16,12 @@ function generalas(embere) {
             
             let td = document.createElement("td");
 
-            if (i !=0 && j != 0 && embere != "bot") {
+            if (i !=0 && j != 0 && embere != "ember") {
                 td.setAttribute("onclick", "Katt(this)")
                 
+            }
+            else{
+                td.setAttribute("onclick","KattEmber(this)")
             }
             td.dataset.sor = i;
             td.dataset.oszlop = j;
@@ -48,9 +51,18 @@ function generalas(embere) {
     jatekter.appendChild(table);
 }
 
+function KattEmber(td){
+    td.style.backgroundColor = "var(--marlott)";
+    var kep = document.createElement("img")
+    kep.src = "explo.png";
+    td.appendChild(kep);
+    td.setAttribute("onclick","")
+}
+
+
 function Katt(td){
     cim.innerHTML = "lövés";
-    td.style.backgroundColor = "var(--marlott)";
+    td.style.backgroundColor = "var(--talalat)";
     var kep = document.createElement("img")
     kep.src = "explo.png";
     td.appendChild(kep);
