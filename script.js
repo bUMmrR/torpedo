@@ -86,56 +86,77 @@ function main(){
 }
 
 // Define variables for the game board size and number of ships
-const boardSize = 10;
-const numShips = 5;
+const tablameret = 10;
+
 
 // Create an empty 2D array to represent the game board
-const board = [];
-for (let i = 0; i < boardSize; i++) {
-  board[i] = new Array(boardSize).fill(0);
+var board = [];
+for (let i = 0; i < tablameret; i++) {
+  board[i] = new Array(tablameret).fill(0);
 }
 
 // Define a function to randomly place a ship of a given length on the board
-function placeShip(shipLength) {
+function Hajolerak(shipLength) {
   let shipPlaced = false;
   while (!shipPlaced) {
     // Choose a random starting position for the ship
-    const row = Math.floor(Math.random() * boardSize);
-    const col = Math.floor(Math.random() * boardSize);
+    const row = Math.floor(Math.random() * tablameret);
+    const col = Math.floor(Math.random() * tablameret);
 
     // Choose a random direction for the ship (0 = horizontal, 1 = vertical)
-    const direction = Math.floor(Math.random() * 2);
+    const irany = Math.floor(Math.random() * 2);
 
     // Check if the ship can be placed in the chosen position and direction
-    let validPlacement = true;
+    let rakhato = true;
     for (let i = 0; i < shipLength; i++) {
-      const newRow = direction === 0 ? row : row + i;
-      const newCol = direction === 1 ? col : col + i;
-      if (newRow >= boardSize || newCol >= boardSize || board[newRow][newCol] === 1) {
-        validPlacement = false;
+        let newRow = undefined;
+        if (irany == 0) {
+            newRow = row;
+        }
+        else { 
+            newRow = row + i;
+        }
+        let newCol = undefined;
+        if (irany == 1) {
+            newCol = col;
+        }
+        else { 
+            newCol = col + i;
+        }
+      if (newRow >= tablameret || newCol >= tablameret || board[newRow][newCol] === 1) {
+        rakhato = false;
         break;
       }
     }
 
     // If the ship can be placed, update the board and mark the ship as placed
-    if (validPlacement) {
-      for (let i = 0; i < shipLength; i++) {
-        const newRow = direction === 0 ? row : row + i;
-        const newCol = direction === 1 ? col : col + i;
-        board[newRow][newCol] = 1;
+    if (rakhato) {
+        for (let i = 0; i < shipLength; i++) {
+            let newRow = undefined;
+            if (irany == 0) {
+                newRow = row;
+            }
+            else { 
+                newRow = row + i;
+            }
+            let newCol = undefined;
+            if (irany == 1) {
+                newCol = col;
+            }
+            else { 
+                newCol = col + i;
+            }          
+            board[newRow][newCol] = shipLength;
       }
       shipPlaced = true;
     }
   }
 }
 
-// Place the ships on the board
 const hajok = [2, 3, 3, 4, 5];
-for (let i = 0; i < numShips; i++) {
-  placeShip(hajok[i]);
+for (let i = 0; i < 5; i++) {
+  Hajolerak(hajok[i]);
 }
-
-// Print the board for debugging purposes
 console.log(board);
 
 main();
