@@ -3,6 +3,15 @@ const emberJatekter = document.getElementById("jatekter-ember")
 const botJatekter = document.getElementById("jatekter-bot")
 var board = new Array();
 
+const hajok = [
+  {id:1,hossz:2},
+  {id:2,hossz:3},
+  {id:3,hossz:3},
+  {id:4,hossz:4},
+  {id:5,hossz:5},
+]
+
+
 //1x5
 //1x4
 //2x3
@@ -22,9 +31,10 @@ function generalas(embere) {
 
             if (i !=0 && j != 0 && embere != "ember") {
                 td.setAttribute("onclick", "Katt(this)")
-                
-            }
-            else{
+                td.dataset.hajoId = board[i-1][j-1].id;
+                td.dataset.hajoHossz = board[i-1][j-1].hossz;
+              }
+              else{
                 td.setAttribute("onclick","KattEmber(this)")
             }
             td.dataset.sor = i;
@@ -65,15 +75,6 @@ function KattEmber(td){
 
 
 function Katt(td){
-    // cim.innerHTML = "lövés";
-    // td.style.backgroundColor = "var(--talalat)";
-    // var kep = document.createElement("img")
-    // kep.src = "explo.png";
-    // td.appendChild(kep);
-    // td.setAttribute("onclick","")
-
-
-
     console.log(td.dataset.tabla)
     if (board[td.dataset.sor-1][td.dataset.oszlop-1] != 0) {
       let kep = document.createElement("img")
@@ -89,6 +90,7 @@ function Katt(td){
     }
 
     td.setAttribute("onclick","")
+
 }
 
 function generalHajo(){
@@ -100,22 +102,20 @@ function generalHajo(){
 }
 
 
-// Create an empty 2D array to represent the game board
 
 
-// Define a function to randomly place a ship of a given length on the board
-function BotHajolerak(shipLength) {
+function BotHajolerak(hajo) {
+  var shipLength = hajo.hossz
   let shipPlaced = false;
   var temp = 0;
   while (!shipPlaced && temp < 1000 ) {
-    // Choose a random starting position for the ship
+
     const row = Math.floor(Math.random() * 10);
     const col = Math.floor(Math.random() * 10);
 
-    // Choose a random direction for the ship (0 = horizontal, 1 = vertical)
+    //(0 = horizontal, 1 = vertical)
     const irany = Math.floor(Math.random() * 2);
 
-    // Check if the ship can be placed in the chosen position and direction
     let rakhato = true;
     for (let i = 0; i < shipLength; i++) {
         let newRow = undefined;
@@ -132,20 +132,13 @@ function BotHajolerak(shipLength) {
         else { 
             newCol = col + i;
         }
-        // console.log(hajoVaneUtba(newRow,newCol));
-        // || board[newRow][newCol] === 1 
       if (newRow >= 10 || newCol >= 10 || hajoVaneUtba(newRow,newCol)) {
         rakhato = false;
-        // console.log(newRow,newCol);
         console.log("nem volt jo");
-        // console.log(board)
-        // console.log(board)
         temp++;
         break;
       }
     }
-
-    // If the ship can be placed, update the board and mark the ship as placed
     if (rakhato) {
         for (let i = 0; i < shipLength; i++) {
             let newRow = undefined;
@@ -164,7 +157,7 @@ function BotHajolerak(shipLength) {
             }          
             console.log(newRow,newCol)
             console.log(board[newRow][newCol])
-            board[newRow][newCol] = shipLength;
+            board[newRow][newCol] = hajo;
       }
       shipPlaced = true;
     }
@@ -189,10 +182,10 @@ function hajoVaneUtba(sor, oszlop) {
   return false;
 }
 
+// const hajok = [2, 3, 3, 4, 5];
   
 function BotHajoGen(){
-  const hajok = [2, 3, 3, 4, 5];
-  for (let i = 5; i >= 0; i--) {
+  for (let i = 4; i >= 0; i--) {
     BotHajolerak(hajok[i]);
   }
   console.log(board);
@@ -204,12 +197,14 @@ function BotTablaGen(){
   }
 }
 
+
+
 function main(){
-  generalas("ember");
-  generalas("bot");
   BotTablaGen();
   BotHajoGen();
-  generalHajo();
+  generalas("ember");
+  generalas("bot");
+  // generalHajo();
 }
 
 main();
