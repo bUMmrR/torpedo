@@ -85,7 +85,7 @@ function Katt(td){
       td.appendChild(kep);
       td.style.backgroundColor = "var(--marlott)";
     }
-    
+
     td.setAttribute("onclick","")
 }
 
@@ -116,7 +116,8 @@ for (let i = 0; i < tablameret; i++) {
 // Define a function to randomly place a ship of a given length on the board
 function BotHajolerak(shipLength) {
   let shipPlaced = false;
-  while (!shipPlaced) {
+  var temp = 0;
+  while (!shipPlaced && temp < 1000 ) {
     // Choose a random starting position for the ship
     const row = Math.floor(Math.random() * tablameret);
     const col = Math.floor(Math.random() * tablameret);
@@ -142,12 +143,14 @@ function BotHajolerak(shipLength) {
             newCol = col + i;
         }
         // console.log(hajoVaneUtba(newRow,newCol));
-        if (hajoVaneUtba(newRow,newCol)) {
-          console.error("Jaj nem jó")
-        }
-      if (newRow >= tablameret || newCol >= tablameret || board[newRow][newCol] === 1 || hajoVaneUtba(newRow,newCol)) {
+        // || board[newRow][newCol] === 1 
+      if (newRow >= tablameret || newCol >= tablameret || hajoVaneUtbaJelenlegi(newRow,newCol)) {
         rakhato = false;
-        console.log("nem volt jo")
+        // console.log(newRow,newCol);
+        console.log("nem volt jo");
+        // console.log(board)
+        // console.log(board)
+        temp++;
         break;
       }
     }
@@ -180,29 +183,29 @@ function BotHajolerak(shipLength) {
 
 
 function hajoVaneUtbaJelenlegi(sor, oszlop) {
-    for (let i = -1; i <= 1; i++) {
-      for (let j = -1; j <= 1; j++) {
-        if (sor + i >= 0 && sor + i < board.length && oszlop + j >= 0 && oszlop + j < board[0].length) {
-          if (!(i == 0 && j == 0) && board[sor + i][oszlop + j] !== 0) {
-            return true;
-          }
+  for (let i = -2; i <= 2; i++) {
+    for (let j = -2; j <= 2; j++) {
+      if (sor + i >= 0 && sor + i < 10 && oszlop + j >= 0 && oszlop + j < 10) {
+        if (!(i == 0 && j == 0) && board[sor + i][oszlop + j] !== 0) {
+          return true;
         }
       }
     }
-    return false;
+  }
+  return false;
 }
 
 function hajoVaneUtba(sor, oszlop) {
-    for (let i = -2; i <= 2; i++) {
-      for (let j = -2; j <= 2; j++) {
-        if (sor + i >= 0 && sor + i < 10 && oszlop + j >= 0 && oszlop + j < 10) {
-          if (!(i == 0 && j == 0) && board[sor + i][oszlop + j] !== 0) {
-            return true;
-          }
+  for (let i = -2; i <= 2; i++) {
+    for (let j = -2; j <= 2; j++) {
+      if (sor + i >= 0 && sor + i < 10 && oszlop + j >= 0 && oszlop + j < 10) {
+        if (!(i == 0 && j == 0) && board[sor + i][oszlop + j] !== 0) {
+          return true;
         }
       }
     }
-    return false;
+  }
+  return false;
 }
 
   
