@@ -96,7 +96,7 @@ for (let i = 0; i < tablameret; i++) {
 }
 
 // Define a function to randomly place a ship of a given length on the board
-function Hajolerak(shipLength) {
+function BotHajolerak(shipLength) {
   let shipPlaced = false;
   while (!shipPlaced) {
     // Choose a random starting position for the ship
@@ -123,8 +123,13 @@ function Hajolerak(shipLength) {
         else { 
             newCol = col + i;
         }
-      if (newRow >= tablameret || newCol >= tablameret || board[newRow][newCol] === 1) {
+        // console.log(hajoVaneUtba(newRow,newCol));
+        if (hajoVaneUtba(newRow,newCol)) {
+          console.error("Jaj nem jó")
+        }
+      if ((newRow >= tablameret || newCol >= tablameret || board[newRow][newCol] === 1)) {
         rakhato = false;
+        console.log("nem volt jo")
         break;
       }
     }
@@ -146,16 +151,47 @@ function Hajolerak(shipLength) {
             else { 
                 newCol = col + i;
             }          
-            board[newRow][newCol] = shipLength;
+            console.log(newRow,newCol)
+            console.log(board[newRow][newCol])
+            board[newRow][newCol] = "hajo";
       }
       shipPlaced = true;
     }
   }
 }
 
+
+function hajoVaneUtbaJelenlegi(sor, oszlop) {
+    for (let i = -1; i <= 1; i++) {
+      for (let j = -1; j <= 1; j++) {
+        if (sor + i >= 0 && sor + i < board.length && oszlop + j >= 0 && oszlop + j < board[0].length) {
+          if (!(i == 0 && j == 0) && board[sor + i][oszlop + j] !== 0) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
+}
+
+function hajoVaneUtba(sor, oszlop) {
+    for (let i = -2; i <= 2; i++) {
+      for (let j = -2; j <= 2; j++) {
+        if (sor + i >= 0 && sor + i < 10 && oszlop + j >= 0 && oszlop + j < 10) {
+          if (!(i == 0 && j == 0) && board[sor + i][oszlop + j] !== 0) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
+}
+
+  
+
 const hajok = [2, 3, 3, 4, 5];
 for (let i = 0; i < 5; i++) {
-  Hajolerak(hajok[i]);
+  BotHajolerak(hajok[i]);
 }
 console.log(board);
 
