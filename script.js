@@ -1,6 +1,8 @@
 const cim = document.getElementById("cim")
 const emberJatekter = document.getElementById("jatekter-ember")
 const botJatekter = document.getElementById("jatekter-bot")
+var board = new Array();
+
 //1x5
 //1x4
 //2x3
@@ -97,21 +99,9 @@ function generalHajo(){
     }
 }
 
-function main(){
-    generalas("ember");
-    generalas("bot");
-    generalHajo();
-}
-
-// Define variables for the game board size and number of ships
-const tablameret = 10;
-
 
 // Create an empty 2D array to represent the game board
-var board = [];
-for (let i = 0; i < tablameret; i++) {
-  board[i] = new Array(tablameret).fill(0);
-}
+
 
 // Define a function to randomly place a ship of a given length on the board
 function BotHajolerak(shipLength) {
@@ -119,8 +109,8 @@ function BotHajolerak(shipLength) {
   var temp = 0;
   while (!shipPlaced && temp < 1000 ) {
     // Choose a random starting position for the ship
-    const row = Math.floor(Math.random() * tablameret);
-    const col = Math.floor(Math.random() * tablameret);
+    const row = Math.floor(Math.random() * 10);
+    const col = Math.floor(Math.random() * 10);
 
     // Choose a random direction for the ship (0 = horizontal, 1 = vertical)
     const irany = Math.floor(Math.random() * 2);
@@ -144,7 +134,7 @@ function BotHajolerak(shipLength) {
         }
         // console.log(hajoVaneUtba(newRow,newCol));
         // || board[newRow][newCol] === 1 
-      if (newRow >= tablameret || newCol >= tablameret || hajoVaneUtbaJelenlegi(newRow,newCol)) {
+      if (newRow >= 10 || newCol >= 10 || hajoVaneUtba(newRow,newCol)) {
         rakhato = false;
         // console.log(newRow,newCol);
         console.log("nem volt jo");
@@ -179,21 +169,12 @@ function BotHajolerak(shipLength) {
       shipPlaced = true;
     }
   }
-}
-
-
-function hajoVaneUtbaJelenlegi(sor, oszlop) {
-  for (let i = -2; i <= 2; i++) {
-    for (let j = -2; j <= 2; j++) {
-      if (sor + i >= 0 && sor + i < 10 && oszlop + j >= 0 && oszlop + j < 10) {
-        if (!(i == 0 && j == 0) && board[sor + i][oszlop + j] !== 0) {
-          return true;
-        }
-      }
-    }
+  if (temp > 990) {
+    BotTablaGen();
+    BotHajoGen();
   }
-  return false;
 }
+
 
 function hajoVaneUtba(sor, oszlop) {
   for (let i = -2; i <= 2; i++) {
@@ -209,11 +190,26 @@ function hajoVaneUtba(sor, oszlop) {
 }
 
   
-
-const hajok = [2, 3, 3, 4, 5];
-for (let i = 5; i >= 0; i--) {
-  BotHajolerak(hajok[i]);
+function BotHajoGen(){
+  const hajok = [2, 3, 3, 4, 5];
+  for (let i = 5; i >= 0; i--) {
+    BotHajolerak(hajok[i]);
+  }
+  console.log(board);
 }
-console.log(board);
+function BotTablaGen(){
+  board = [];
+  for (let i = 0; i < 10; i++) {
+    board[i] = new Array(10).fill(0);
+  }
+}
+
+function main(){
+  generalas("ember");
+  generalas("bot");
+  BotTablaGen();
+  BotHajoGen();
+  generalHajo();
+}
 
 main();
