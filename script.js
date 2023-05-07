@@ -63,11 +63,29 @@ function KattEmber(td){
 
 
 function Katt(td){
-    cim.innerHTML = "lövés";
-    td.style.backgroundColor = "var(--talalat)";
-    var kep = document.createElement("img")
-    kep.src = "explo.png";
-    td.appendChild(kep);
+    // cim.innerHTML = "lövés";
+    // td.style.backgroundColor = "var(--talalat)";
+    // var kep = document.createElement("img")
+    // kep.src = "explo.png";
+    // td.appendChild(kep);
+    // td.setAttribute("onclick","")
+
+
+
+    console.log(td.dataset.tabla)
+    if (board[td.dataset.sor-1][td.dataset.oszlop-1] != 0) {
+      let kep = document.createElement("img")
+      kep.src = "talalat.png";
+      td.appendChild(kep);
+      td.style.backgroundColor = "var(--talalat)";
+    }
+    else{
+      let kep = document.createElement("img")
+      kep.src = "explo.png";
+      td.appendChild(kep);
+      td.style.backgroundColor = "var(--marlott)";
+    }
+    
     td.setAttribute("onclick","")
 }
 
@@ -127,7 +145,7 @@ function BotHajolerak(shipLength) {
         if (hajoVaneUtba(newRow,newCol)) {
           console.error("Jaj nem jó")
         }
-      if ((newRow >= tablameret || newCol >= tablameret || board[newRow][newCol] === 1)) {
+      if (newRow >= tablameret || newCol >= tablameret || board[newRow][newCol] === 1 || hajoVaneUtba(newRow,newCol)) {
         rakhato = false;
         console.log("nem volt jo")
         break;
@@ -153,7 +171,7 @@ function BotHajolerak(shipLength) {
             }          
             console.log(newRow,newCol)
             console.log(board[newRow][newCol])
-            board[newRow][newCol] = "hajo";
+            board[newRow][newCol] = shipLength;
       }
       shipPlaced = true;
     }
@@ -190,7 +208,7 @@ function hajoVaneUtba(sor, oszlop) {
   
 
 const hajok = [2, 3, 3, 4, 5];
-for (let i = 0; i < 5; i++) {
+for (let i = 5; i >= 0; i--) {
   BotHajolerak(hajok[i]);
 }
 console.log(board);
