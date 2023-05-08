@@ -234,7 +234,7 @@ function generelasHajo(){
 function hajoPozJelenit(td) {
   let jelenlegHajo = document.getElementById("jelenlegHajo")
   let hajo = td.dataset.hajo
-  
+
 
 
 
