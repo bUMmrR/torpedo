@@ -2,6 +2,7 @@
     --marlott: rgba(238, 238, 180, 0.5);
     --hajoide: rgba(77, 213, 236, 0.712);
     --talalat: rgba(236, 77, 77, 0.712);
+    --forgat: rgba(207, 236, 77, 0.712);
 }
 
 body{
@@ -10,8 +11,15 @@ body{
     background-image: url(https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fget.wallhere.com%2Fphoto%2F2560x1440-px-ocean-battle-war-World-of-Warships-1338633.jpg&f=1&nofb=1&ipt=6c700f3fc7089fb4499bed0248297f19f5f0dc59ab0590495f0651bc3cfbde98&ipo=images);
 }
 
-table {
+.hajoTabla {
     border-collapse: separate;
+    border-spacing: 0;
+    display: inline-block;
+    margin: 20px;
+    text-align: center;
+}
+
+.maradekTabla{
     border-spacing: 0;
     display: inline-block;
     margin: 20px;

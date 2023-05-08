@@ -31,8 +31,6 @@ function generalas(embere) {
 
             if (i !=0 && j != 0 && embere != "ember") {
                 td.setAttribute("onclick", "Katt(this)")
-                td.dataset.hajoId = board[i-1][j-1].id;
-                td.dataset.hajoHossz = board[i-1][j-1].hossz;
               }
               else{
                 td.setAttribute("onclick","KattEmber(this)")
@@ -60,8 +58,8 @@ function generalas(embere) {
 
         table.appendChild(tr);
     }
-    console.log()
     cim.innerHTML="Hajók lerakása"
+    table.classList+= "hajoTabla"
     jatekter.appendChild(table);
 }
 
@@ -75,7 +73,6 @@ function KattEmber(td){
 
 
 function Katt(td){
-    console.log(td.dataset.tabla)
     if (board[td.dataset.sor-1][td.dataset.oszlop-1] != 0) {
       let kep = document.createElement("img")
       kep.src = "talalat.png";
@@ -134,7 +131,6 @@ function BotHajolerak(hajo) {
         }
       if (newRow >= 10 || newCol >= 10 || hajoVaneUtba(newRow,newCol)) {
         rakhato = false;
-        console.log("nem volt jo");
         temp++;
         break;
       }
@@ -155,8 +151,6 @@ function BotHajolerak(hajo) {
             else { 
                 newCol = col + i;
             }          
-            console.log(newRow,newCol)
-            console.log(board[newRow][newCol])
             board[newRow][newCol] = hajo;
       }
       shipPlaced = true;
@@ -188,7 +182,6 @@ function BotHajoGen(){
   for (let i = 4; i >= 0; i--) {
     BotHajolerak(hajok[i]);
   }
-  console.log(board);
 }
 function BotTablaGen(){
   board = [];
@@ -197,6 +190,70 @@ function BotTablaGen(){
   }
 }
 
+function generelasHajo(){
+  let table = document.createElement("table");
+  let hajo = 5;
+  let elsoAlkalom = true;
+  for (let i = 0; i <= 10; i++) {
+    let tr = document.createElement("tr");
+    for (let j = 0; j <= 5; j++) {
+      let td = document.createElement("td");
+      if (i % 2 == 0) {
+        
+      }
+      else{
+        if (elsoAlkalom) {
+          hajo--;
+          elsoAlkalom = false;
+        }
+        console.log(hajo);
+          if (j <= hajok[hajo].hossz-1){
+            td.style.backgroundColor = "var(--hajoide)";   
+            td.dataset.hajo = hajok[hajo].id;
+            td.setAttribute("onclick","hajoPozJelenit(this)")      
+          }
+          if (j == 5) {
+            td.style.backgroundColor = "var(--forgat)";         
+            let kep = document.createElement("img")
+            kep.src = "fordit_hajo.png";
+            td.appendChild(kep);
+        }
+      } 
+      
+      tr.appendChild(td);
+    }
+    if (i % 2 == 0) {
+        elsoAlkalom = true;
+    }
+    table.appendChild(tr);
+  }
+  table.classList += "maradekTabla" 
+  emberJatekter.appendChild(table);
+}
+
+function hajoPozJelenit(td) {
+  let jelenlegHajo = document.getElementById("jelenlegHajo")
+  let hajo = td.dataset.hajo
+  
+
+
+
+}
+
+function generalasJelenlegHajo(){
+  let table = document.createElement("table")
+  for (let i = 0; i < 6; i++) {
+    let tr = document.createElement("tr")
+    for (let j = 0; j < 5; j++) {
+      let td = document.createElement("td")
+      tr.appendChild(td);
+    }
+    table.appendChild(tr);
+  }
+  table.classList += "maradekTabla" 
+  table.id = "jelenlegHajo"
+  emberJatekter.appendChild(table)
+}
 
 
 function main(){
@@ -204,6 +261,8 @@ function main(){
   BotHajoGen();
   generalas("ember");
   generalas("bot");
+  generalasJelenlegHajo();
+  generelasHajo();
   // generalHajo();
 }
 
