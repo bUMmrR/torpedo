@@ -213,9 +213,9 @@ function generelasHajo(){
           }
           if (j == 5) {
             td.style.backgroundColor = "var(--forgat)";       
-            td.dataset.hajo = hajo+1;  
-            td.setAttribute("onclick","forgat(this)")
-            let kep = document.createElement("img")
+            td.dataset = hajo;
+            td.setAttribute("onclick","forgat(this)");
+            let kep = document.createElement("img");
             kep.src = "fordit_hajo.png";
             td.appendChild(kep);
         }
@@ -235,9 +235,9 @@ function generelasHajo(){
 
 function forgat(td){
   let jelenlegHajo = document.getElementById("jelenlegHajo")
-  let hajo = td.dataset.hajo
   var row = jelenlegHajo.rows[0];
   var cell = row.cells[0];
+  console.log(cell.dataset.hajo,td.dataset.hajo)
   if (cell.dataset.hajo == td.dataset.hajo) {
     forgatva++;
     hajoPozJelenit(td)
@@ -246,13 +246,23 @@ function forgat(td){
 var forgatva = 0;
 
 function hajoPozJelenit(td) {
-  document.querySelector()
+  /* ------------------------------------ Az eddigi nullázása ----------------------------------- */
+  var elements = document.querySelectorAll('td[data-hajo]');
+  for (let i = 0; i < elements.length; i++) {
+    const element = elements[i];
+    element.style.backgroundColor= "var(--hajoide)"
+  }
+
+  elements = document.querySelectorAll('td[data-hajo="' + td.dataset.hajo + '"]');
+  for (let index = 0; index < elements.length; index++) {
+    elements[index].style.backgroundColor="var(--talalat)"
+  }
   let jelenlegHajo = document.getElementById("jelenlegHajo")
-  console.log(td)
   let hajo = td.dataset.hajo
   var row = jelenlegHajo.rows[0];
   var cell = row.cells[0];
   cell.dataset.hajo = hajo
+  // console.log(forgatva);
   for (let index = 0; index < 5; index++) {
     var row = jelenlegHajo.rows[index];
     for (let j = 0; j < 5; j++) {
