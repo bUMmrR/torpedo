@@ -100,17 +100,6 @@ function Katt(td){
 
 }
 
-function generalHajo(){
-    for (let i = 0; i < 10; i++) {
-        var temp = document.createElement("p")
-        temp.innerText = "igen"
-        emberJatekter.appendChild(temp)
-    }
-}
-
-
-
-
 function BotHajolerak(hajo) {
   var shipLength = hajo.hossz
   let shipPlaced = false;
@@ -223,7 +212,9 @@ function generelasHajo(){
             td.setAttribute("onclick","hajoPozJelenit(this)")      
           }
           if (j == 5) {
-            td.style.backgroundColor = "var(--forgat)";         
+            td.style.backgroundColor = "var(--forgat)";       
+            td.dataset.hajo = hajo+1;  
+            td.setAttribute("onclick","forgat(this)")
             let kep = document.createElement("img")
             kep.src = "fordit_hajo.png";
             td.appendChild(kep);
@@ -241,9 +232,50 @@ function generelasHajo(){
   emberJatekter.appendChild(table);
 }
 
-function hajoPozJelenit(td) {
+
+function forgat(td){
   let jelenlegHajo = document.getElementById("jelenlegHajo")
   let hajo = td.dataset.hajo
+  var row = jelenlegHajo.rows[0];
+  var cell = row.cells[0];
+  if (cell.dataset.hajo == td.dataset.hajo) {
+    forgatva++;
+    hajoPozJelenit(td)
+  }
+}
+var forgatva = 0;
+
+function hajoPozJelenit(td) {
+  document.querySelector()
+  let jelenlegHajo = document.getElementById("jelenlegHajo")
+  console.log(td)
+  let hajo = td.dataset.hajo
+  var row = jelenlegHajo.rows[0];
+  var cell = row.cells[0];
+  cell.dataset.hajo = hajo
+  for (let index = 0; index < 5; index++) {
+    var row = jelenlegHajo.rows[index];
+    for (let j = 0; j < 5; j++) {
+      var cell = row.cells[j];
+      cell.style.backgroundColor="var(--semmi)";
+      // console.log(cell);
+    }
+  }
+  if (forgatva %2 == 0) {
+    for (let index = 0; index < hajok[hajo-1].hossz; index++) {
+      var row = jelenlegHajo.rows[index+1];
+      var cell = row.cells[2];
+      cell.style.backgroundColor = "var(--marlott)";
+    }
+  }
+  else{
+    var row = jelenlegHajo.rows[3];
+    for (let index = 0; index < hajok[hajo-1].hossz; index++) {
+      var cell = row.cells[index];
+      cell.style.backgroundColor = "var(--marlott)";
+    }
+
+  }
 }
 
 function generalasJelenlegHajo(){
@@ -252,6 +284,8 @@ function generalasJelenlegHajo(){
     let tr = document.createElement("tr")
     for (let j = 0; j < 5; j++) {
       let td = document.createElement("td")
+      td.dataset.sor = i;
+      td.dataset.oszlop = j;
       tr.appendChild(td);
     }
     table.appendChild(tr);
@@ -260,6 +294,7 @@ function generalasJelenlegHajo(){
   table.id = "jelenlegHajo"
   emberJatekter.appendChild(table)
 }
+
 
 
 function main(){
