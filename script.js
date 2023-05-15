@@ -59,11 +59,21 @@ function generalas(embere) {
         table.appendChild(tr);
     }
     cim.innerHTML="Hajók lerakása"
+    if (embere != "ember") {
+      table.style.display="none";
+    }
     table.classList+= "hajoTabla"
     jatekter.appendChild(table);
 }
 
 function KattEmber(td){
+    if (true) {
+      document.getElementsByClassName("hajoTabla")[1].style.display = "inline-block"
+      document.getElementsByClassName("maradekTabla")[0].style.display = "none"
+      document.getElementsByClassName("maradekTabla")[1].style.display = "none"
+      document.getElementsByClassName("col-12")[0].classList= "col-6"
+      document.getElementsByClassName("col-0")[0].classList= "col-6"
+    }
     td.style.backgroundColor = "var(--marlott)";
     var kep = document.createElement("img")
     kep.src = "explo.png";
@@ -234,10 +244,6 @@ function generelasHajo(){
 function hajoPozJelenit(td) {
   let jelenlegHajo = document.getElementById("jelenlegHajo")
   let hajo = td.dataset.hajo
-
-
-
-
 }
 
 function generalasJelenlegHajo(){

@@ -64,6 +64,10 @@ tr:first-child td {
   border: none;
 }
 
+h1{
+    margin: 10px;
+}
+
 /* tr:first-child {
   border: none;
 } */
