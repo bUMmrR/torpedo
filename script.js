@@ -2,6 +2,10 @@ const cim = document.getElementById("cim")
 const emberJatekter = document.getElementById("jatekter-ember")
 const botJatekter = document.getElementById("jatekter-bot")
 var board = new Array();
+var boardEmber = new Array();
+var szunet= false;
+
+var forgatva = 1;
 
 const hajok = [
   {id:1,hossz:2},
@@ -65,21 +69,121 @@ function generalas(embere) {
     table.classList+= "hajoTabla"
     jatekter.appendChild(table);
 }
+// if (true) {
+//   document.getElementsByClassName("hajoTabla")[1].style.display = "inline-block"
+//   document.getElementsByClassName("maradekTabla")[0].style.display = "none"
+//   document.getElementsByClassName("maradekTabla")[1].style.display = "none"
+//   document.getElementsByClassName("col-12")[0].classList= "col-6"
+//   document.getElementsByClassName("col-0")[0].classList= "col-6"
+// }
 
 function KattEmber(td){
-    if (true) {
-      document.getElementsByClassName("hajoTabla")[1].style.display = "inline-block"
-      document.getElementsByClassName("maradekTabla")[0].style.display = "none"
-      document.getElementsByClassName("maradekTabla")[1].style.display = "none"
-      document.getElementsByClassName("col-12")[0].classList= "col-6"
-      document.getElementsByClassName("col-0")[0].classList= "col-6"
+  if(document.getElementById("cim").innerHTML == "Hajók lerakása" && !szunet){
+      let jelenlegHajo = document.getElementById("jelenlegHajo");
+      console.log(jelenlegHajo);
+      var row = jelenlegHajo.rows[0];
+      var cell = row.cells[0];
+      var hajo = cell.dataset.hajo;
+      var x = Number(td.dataset.sor);
+      var y = Number(td.dataset.oszlop);
+      if (hajo != undefined) {
+        var rakhato = true;
+        irany = forgatva % 2;
+        for (let i = 0; i < hajok[hajo-1].hossz; i++) {
+          let newRow = undefined;
+          if (irany == 1) {
+              newRow = x-1;
+          }
+          else { 
+              newRow = x-1 + i;
+          }
+          let newCol = undefined;
+          if (irany == 0) {
+              newCol = y-1;
+          }
+          else { 
+              newCol = y-1 + i;
+          }
+
+          if (newRow >= 10 || newCol >= 10 || hajoVaneUtbaEmber(newRow,newCol)) {
+          rakhato = false;
+          nemJoHely(td);
+          break;
+        }
+      }
+      if (rakhato) {
+          for (let i = 0; i < hajok[hajo-1].hossz; i++) {
+              let newRow = undefined;
+              if (irany == 1) {
+                  newRow = x-1;
+              }
+              else { 
+                  newRow = x-1 + i;
+              }
+              let newCol = undefined;
+              if (irany == 0) {
+                  newCol = y-1;
+              }
+              else { 
+                  newCol = y-1 + i;
+              }          
+              boardEmber[newRow][newCol] = hajo;
+              var hajoTabla = document.getElementsByTagName("table")[0]
+              var row = hajoTabla.rows[newRow+1]
+              var cell1 = row.cells[newCol+1]
+              cell1.style.backgroundColor = "var(--hajoide)"
+              cell1.setAttribute("onclick","")
+        }
+        shipPlaced = true;
+        console.log(boardEmber);
+
+        var tabla = document.getElementsByClassName("maradekTabla")[1]
+        console.log(tabla)
+        for (let i = 0; i < tabla.rows.length; i++) {
+          for (let j = 0; j < tabla.rows[0].cells.length; j++) {
+            var row = tabla.rows[i]
+            var cell2 = row.cells[j]
+            if (Number(cell2.dataset.hajo) == Number(hajo) || Number(cell2.dataset.hajoTemp) == Number(hajo)){
+              cell2.setAttribute("onclick","")
+              cell2.style.backgroundColor = "grey";
+            }
+          }
+        }
+        cell.dataset.hajo = 0;
+      }
     }
-    td.style.backgroundColor = "var(--marlott)";
-    var kep = document.createElement("img")
-    kep.src = "explo.png";
-    td.appendChild(kep);
-    td.setAttribute("onclick","")
+    else{
+      nemJoHely(td);
+    }
+  }
 }
+
+
+function nemJoHely(td) {
+  szunet = true;
+  var szinek = ["red", "var(--semmi)"];
+  var delay = 500; // ms
+
+  for (var i = 0; i < 2 * szinek.length; i++) {
+    var jelenlegSzin = szinek[i % szinek.length];
+    setTimeout(function(szin) {
+      return function() {
+        td.style.backgroundColor = szin;
+      };
+    }(jelenlegSzin), delay * i);
+  }
+
+  // eredeti szin
+  setTimeout(function() {
+    td.style.backgroundColor = "var(--semmi)";
+    szunet = false;
+  }, delay * 2 * szinek.length);
+}
+
+
+
+
+
 
 
 function Katt(td){
@@ -165,31 +269,64 @@ function BotHajolerak(hajo) {
 function hajoVaneUtba(sor, oszlop) {
   for (let i = -2; i <= 2; i++) {
     for (let j = -2; j <= 2; j++) {
-      if (sor + i >= 0 && sor + i < 10 && oszlop + j >= 0 && oszlop + j < 10) {
-        if (!(i == 0 && j == 0) && board[sor + i][oszlop + j] !== 0) {
+      if ((sor + i >= 0 && sor + i < 10 && oszlop + j >= 0 && oszlop + j < 10) && (!(i == 0 && j == 0) && board[sor + i][oszlop + j] !== 0)) {
           return true;
-        }
       }
     }
   }
   return false;
 }
 
-// const hajok = [2, 3, 3, 4, 5];
-  
-function BotHajoGen(){
-  for (let i = 4; i >= 0; i--) {
-    BotHajolerak(hajok[i]);
+function hajoVaneUtbaEmber(sor, oszlop) {
+  for (let i = -2; i <= 2; i++) {
+    for (let j = -2; j <= 2; j++) {
+      if ((sor + i >= 0 && sor + i < 10 && oszlop + j >= 0 && oszlop + j < 10) && (!(i == 0 && j == 0) && boardEmber[sor + i][oszlop + j] !== 0)) {
+          return true;
+      }
+    }
   }
+  return false;
 }
+
+  
 function BotTablaGen(){
+  /* ------------------------------------  ----------------------------------- */
+
+
   board = [];
   for (let i = 0; i < 10; i++) {
     board[i] = new Array(10).fill(0);
   }
 }
 
+
+
+function EmberTablaGen(){
+  /* ------------------------------------  ----------------------------------- */
+
+
+  boardEmber = [];
+  for (let i = 0; i < 10; i++) {
+    boardEmber[i] = new Array(10).fill(0);
+  }
+}
+
+
+function BotHajoGen(){
+  /* ---------------------------------- Meghivja a függvényt ami a hajogat lerakja a botnak ---------------------------------- */
+
+
+  for (let i = 4; i >= 0; i--) {
+    BotHajolerak(hajok[i]);
+  }
+}
+
+
+/* ----------------------------------- Legenerálja a kiválasztható hajókat ---------------------------------- */
 function generelasHajo(){
+
+
+
   let table = document.createElement("table");
   let hajo = 5;
   let elsoAlkalom = true;
@@ -206,19 +343,19 @@ function generelasHajo(){
           elsoAlkalom = false;
         }
         console.log(hajo);
-          if (j <= hajok[hajo].hossz-1){
-            td.style.backgroundColor = "var(--hajoide)";   
-            td.dataset.hajo = hajok[hajo].id;
-            td.setAttribute("onclick","hajoPozJelenit(this)")      
-          }
-          if (j == 5) {
-            td.style.backgroundColor = "var(--forgat)";       
-            td.dataset.hajoTemp = hajo+1;
-            td.dataset.forgat = true;
-            td.setAttribute("onclick","forgat(this)");
-            let kep = document.createElement("img");
-            kep.src = "fordit_hajo.png";
-            td.appendChild(kep);
+        if (j <= hajok[hajo].hossz-1){
+          td.style.backgroundColor = "var(--hajoide)";   
+          td.dataset.hajo = hajok[hajo].id;
+          td.setAttribute("onclick","hajoPozJelenit(this)")      
+        }
+        if (j == 5) {
+          td.style.backgroundColor = "var(--forgat)";       
+          td.dataset.hajoTemp = hajo+1;
+          td.dataset.forgat = true;
+          td.setAttribute("onclick","forgat(this)");
+          let kep = document.createElement("img");
+          kep.src = "fordit_hajo.png";
+          td.appendChild(kep);
         }
       } 
       
@@ -234,7 +371,10 @@ function generelasHajo(){
 }
 
 
+/* ------------------------------------ A forgatás gomb OnClick-je ----------------------------------- */
 function forgat(td){
+
+
   let jelenlegHajo = document.getElementById("jelenlegHajo")
   var row = jelenlegHajo.rows[0];
   var cell = row.cells[0];
@@ -244,20 +384,27 @@ function forgat(td){
     hajoPozJelenit(td)
   }
 }
-var forgatva = 0;
 
+/* ------------------------------------ Megjeleniti a jelenleg kiválasztott hajót a táblájába ----------------------------------- */
 function hajoPozJelenit(td) {
-  /* ------------------------------------ Az eddigi nullázása ----------------------------------- */
+
+
+
+  /* ------------------------------------ Az eddigi pirosozás nullázása ----------------------------------- */
   var elements = document.querySelectorAll('td[data-hajo]');
   for (let i = 0; i < elements.length; i++) {
     const element = elements[i];
-    element.style.backgroundColor= "var(--hajoide)"
+    if (element.style.backgroundColor != "grey") {
+      element.style.backgroundColor= "var(--hajoide)"
+      
+    }
   }
 
 
   let jelenlegHajo = document.getElementById("jelenlegHajo")
   let hajo;
-  console.log(td);
+
+  /* ------------------------------------ Most forgatásgomb vagy se? ----------------------------------- */
   if (td.dataset.forgat == "true") {
     console.log(td.dataset.hajoTemp)
     hajo = td.dataset.hajoTemp
@@ -267,28 +414,35 @@ function hajoPozJelenit(td) {
   }
 
   elements = document.querySelectorAll('td[data-hajo="' + hajo + '"]');
-  console.log(elements);
+
+  /* ------------------------------------ A kiválsztott hajó pirositása ----------------------------------- */
   for (let index = 0; index < elements.length; index++) {
     elements[index].style.backgroundColor="var(--talalat)"
   }
 
   var row = jelenlegHajo.rows[0];
   var cell = row.cells[0];
-  cell.dataset.hajo = hajo
-  // console.log(forgatva);
+  cell.dataset.hajo = hajo // jelenlegi hajó id-nek a kimentése egy láthatatlan mezőbe :,)
+
+  /* ------------------------------------ a hajó poz nullázása ----------------------------------- */
   for (let index = 0; index < 6; index++) {
     var row = jelenlegHajo.rows[index];
     for (let j = 0; j < 5; j++) {
       var cell = row.cells[j];
       cell.style.backgroundColor="var(--semmi)";
-      // console.log(cell);
+      cell.style.border = "solid white 0px"
     }
   }
+
+  /* ------------------------------------ a hajó poz mutatása ----------------------------------- */
+
   if (forgatva %2 == 0) {
     for (let index = 0; index < hajok[hajo-1].hossz; index++) {
       var row = jelenlegHajo.rows[index+1];
       var cell = row.cells[2];
       cell.style.backgroundColor = "var(--marlott)";
+      cell.style.border = "solid white 1px"
+
     }
   }
   else{
@@ -296,24 +450,31 @@ function hajoPozJelenit(td) {
     for (let index = 0; index < hajok[hajo-1].hossz; index++) {
       var cell = row.cells[index];
       cell.style.backgroundColor = "var(--marlott)";
-    }
+      cell.style.border = "solid white 1px";
 
+    }
   }
 }
 
 function generalasJelenlegHajo(){
+ /* ------------------------------------ Maga a jelenleg kiválasztott hajó táblájának a generálása ----------------------------------- */
+
+
   let table = document.createElement("table")
   for (let i = 0; i < 6; i++) {
     let tr = document.createElement("tr")
+    tr.style.border = "solid white 0px";
     for (let j = 0; j < 5; j++) {
       let td = document.createElement("td")
       td.dataset.sor = i;
       td.dataset.oszlop = j;
+      td.style.border = "solid white 0px";
       tr.appendChild(td);
     }
     table.appendChild(tr);
   }
   table.classList += "maradekTabla" 
+  table.style.border = "solid white 0px";
   table.id = "jelenlegHajo"
   emberJatekter.appendChild(table)
 }
@@ -322,6 +483,7 @@ function generalasJelenlegHajo(){
 
 function main(){
   BotTablaGen();
+  EmberTablaGen();
   BotHajoGen();
   generalas("ember");
   generalas("bot");
