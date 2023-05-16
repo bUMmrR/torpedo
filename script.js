@@ -21,6 +21,8 @@ const hajok = [
 //2x3
 //1x2
 
+
+/* -------------- Ez generálja a 2 tablat amibe a játok folyik -------------- */
 function generalas(embere) { 
     const betuk = ["A","B","C","D","E","F","G","H","I","J"];
     jatekter = document.getElementById("jatekter-"+embere);
@@ -69,14 +71,8 @@ function generalas(embere) {
     table.classList+= "hajoTabla"
     jatekter.appendChild(table);
 }
-// if (true) {
-//   document.getElementsByClassName("hajoTabla")[1].style.display = "inline-block"
-//   document.getElementsByClassName("maradekTabla")[0].style.display = "none"
-//   document.getElementsByClassName("maradekTabla")[1].style.display = "none"
-//   document.getElementsByClassName("col-12")[0].classList= "col-6"
-//   document.getElementsByClassName("col-0")[0].classList= "col-6"
-// }
 
+/* --------------- Ez az ember saját táblájának az onClick-je --------------- */
 function KattEmber(td){
   if(document.getElementById("cim").innerHTML == "Hajók lerakása" && !szunet){
       let jelenlegHajo = document.getElementById("jelenlegHajo");
@@ -146,9 +142,15 @@ function KattEmber(td){
             if (Number(cell2.dataset.hajo) == Number(hajo) || Number(cell2.dataset.hajoTemp) == Number(hajo)){
               cell2.setAttribute("onclick","")
               cell2.style.backgroundColor = "grey";
+
             }
           }
         }
+        if (osszeshajoLerak(tabla)) {
+          document.getElementById("cim").innerHTML = "Ősszes hajó lerakva"
+          jatekIndul();
+        }
+        hajoPozNull();
         cell.dataset.hajo = 0;
       }
     }
@@ -158,7 +160,23 @@ function KattEmber(td){
   }
 }
 
+/* ---------- Megnézni hogy a felhaszáló lerakta-e az ősszes hajót ---------- */
+function osszeshajoLerak(tabla){
+  var levan = true;
+  for (let i = 0; i < tabla.rows.length; i++) {
+    for (let j = 0; j < tabla.rows[0].cells.length; j++) {
+      var row = tabla.rows[i];
+      var cell = row.cells[j];
+      if (cell.style.backgroundColor != "grey" && cell.style.backgroundColor != ""){
+        console.log(cell.style.backgroundColor);
+        levan = false;
+      }
+    }
+  }
+  return levan;
+}
 
+/* ------------------- Elkezd villogni ha nem jó a lerakás ------------------ */
 function nemJoHely(td) {
   szunet = true;
   var szinek = ["red", "var(--semmi)"];
@@ -180,12 +198,7 @@ function nemJoHely(td) {
   }, delay * 2 * szinek.length);
 }
 
-
-
-
-
-
-
+/* ------------------------------------ Az ember lő a botnak a táblájára ----------------------------------- */
 function Katt(td){
     if (board[td.dataset.sor-1][td.dataset.oszlop-1] != 0) {
       let kep = document.createElement("img")
@@ -204,11 +217,13 @@ function Katt(td){
 
 }
 
+
+/* ------------------------------------ A függvény ami lerakja a botnak a hajóit ha jó ----------------------------------- */
 function BotHajolerak(hajo) {
   var shipLength = hajo.hossz
   let shipPlaced = false;
   var temp = 0;
-  while (!shipPlaced && temp < 1000 ) {
+  while (!shipPlaced) {
 
     const row = Math.floor(Math.random() * 10);
     const col = Math.floor(Math.random() * 10);
@@ -234,7 +249,6 @@ function BotHajolerak(hajo) {
         }
       if (newRow >= 10 || newCol >= 10 || hajoVaneUtba(newRow,newCol)) {
         rakhato = false;
-        temp++;
         break;
       }
     }
@@ -259,16 +273,12 @@ function BotHajolerak(hajo) {
       shipPlaced = true;
     }
   }
-  if (temp > 990) {
-    BotTablaGen();
-    BotHajoGen();
-  }
 }
 
-
+/* --------- Megnézi hogy letudná-e rakni a jelenlegi helyre a hajót a botnak -------- */
 function hajoVaneUtba(sor, oszlop) {
-  for (let i = -2; i <= 2; i++) {
-    for (let j = -2; j <= 2; j++) {
+  for (let i = -1; i < 2; i++) {
+    for (let j = -1; j < 2; j++) {
       if ((sor + i >= 0 && sor + i < 10 && oszlop + j >= 0 && oszlop + j < 10) && (!(i == 0 && j == 0) && board[sor + i][oszlop + j] !== 0)) {
           return true;
       }
@@ -276,10 +286,11 @@ function hajoVaneUtba(sor, oszlop) {
   }
   return false;
 }
+/* --------- Megnézi hogy letudná-e rakni a jelenlegi helyre a hajót az embernek -------- */
 
 function hajoVaneUtbaEmber(sor, oszlop) {
-  for (let i = -2; i <= 2; i++) {
-    for (let j = -2; j <= 2; j++) {
+  for (let i = -1; i < 2; i++) {
+    for (let j = -1; j < 2; j++) {
       if ((sor + i >= 0 && sor + i < 10 && oszlop + j >= 0 && oszlop + j < 10) && (!(i == 0 && j == 0) && boardEmber[sor + i][oszlop + j] !== 0)) {
           return true;
       }
@@ -289,8 +300,8 @@ function hajoVaneUtbaEmber(sor, oszlop) {
 }
 
   
+/* ------------------------------------ Feltölti a botnak a tabláját 0-val  ----------------------------------- */
 function BotTablaGen(){
-  /* ------------------------------------  ----------------------------------- */
 
 
   board = [];
@@ -300,6 +311,7 @@ function BotTablaGen(){
 }
 
 
+/* ------------------------------------ Feltölti az embernek a tabláját 0-val  ----------------------------------- */
 
 function EmberTablaGen(){
   /* ------------------------------------  ----------------------------------- */
@@ -312,9 +324,9 @@ function EmberTablaGen(){
 }
 
 
+/* ---------------------------------- Meghivja a függvényt ami a hajogat lerakja a botnak ---------------------------------- */
 function BotHajoGen(){
-  /* ---------------------------------- Meghivja a függvényt ami a hajogat lerakja a botnak ---------------------------------- */
-
+  
 
   for (let i = 4; i >= 0; i--) {
     BotHajolerak(hajok[i]);
@@ -384,7 +396,17 @@ function forgat(td){
     hajoPozJelenit(td)
   }
 }
-
+function hajoPozNull(){
+  let jelenlegHajo = document.getElementById("jelenlegHajo")
+  for (let index = 0; index < 6; index++) {
+    var row = jelenlegHajo.rows[index];
+    for (let j = 0; j < 5; j++) {
+      var cell = row.cells[j];
+      cell.style.backgroundColor="var(--semmi)";
+      cell.style.border = "solid white 0px"
+    }
+  }
+}
 /* ------------------------------------ Megjeleniti a jelenleg kiválasztott hajót a táblájába ----------------------------------- */
 function hajoPozJelenit(td) {
 
@@ -396,7 +418,6 @@ function hajoPozJelenit(td) {
     const element = elements[i];
     if (element.style.backgroundColor != "grey") {
       element.style.backgroundColor= "var(--hajoide)"
-      
     }
   }
 
@@ -425,14 +446,10 @@ function hajoPozJelenit(td) {
   cell.dataset.hajo = hajo // jelenlegi hajó id-nek a kimentése egy láthatatlan mezőbe :,)
 
   /* ------------------------------------ a hajó poz nullázása ----------------------------------- */
-  for (let index = 0; index < 6; index++) {
-    var row = jelenlegHajo.rows[index];
-    for (let j = 0; j < 5; j++) {
-      var cell = row.cells[j];
-      cell.style.backgroundColor="var(--semmi)";
-      cell.style.border = "solid white 0px"
-    }
-  }
+
+  console.log(jelenlegHajo)
+  hajoPozNull(jelenlegHajo)
+
 
   /* ------------------------------------ a hajó poz mutatása ----------------------------------- */
 
@@ -456,8 +473,8 @@ function hajoPozJelenit(td) {
   }
 }
 
+/* ------------------------------------ Maga a jelenleg kiválasztott hajó táblájának a generálása ----------------------------------- */
 function generalasJelenlegHajo(){
- /* ------------------------------------ Maga a jelenleg kiválasztott hajó táblájának a generálása ----------------------------------- */
 
 
   let table = document.createElement("table")
@@ -479,7 +496,14 @@ function generalasJelenlegHajo(){
   emberJatekter.appendChild(table)
 }
 
-
+/* ------- Kirakja a második táblázatot, hogy az ember tudjon rá lőni ------- */
+function jatekIndul(){
+  document.getElementsByClassName("hajoTabla")[1].style.display = "inline-block"
+  document.getElementsByClassName("maradekTabla")[0].style.display = "none"
+  document.getElementsByClassName("maradekTabla")[1].style.display = "none"
+  document.getElementsByClassName("col-12")[0].classList= "col-6"
+  document.getElementsByClassName("col-0")[0].classList= "col-6"
+}
 
 function main(){
   BotTablaGen();
@@ -489,7 +513,6 @@ function main(){
   generalas("bot");
   generalasJelenlegHajo();
   generelasHajo();
-  // generalHajo();
 }
 
 main();
