@@ -498,11 +498,72 @@ function generalasJelenlegHajo(){
 
 /* ------- Kirakja a második táblázatot, hogy az ember tudjon rá lőni ------- */
 function jatekIndul(){
+  GombokLerakasa();
   document.getElementsByClassName("hajoTabla")[1].style.display = "inline-block"
   document.getElementsByClassName("maradekTabla")[0].style.display = "none"
   document.getElementsByClassName("maradekTabla")[1].style.display = "none"
   document.getElementsByClassName("col-12")[0].classList= "col-6"
   document.getElementsByClassName("col-0")[0].classList= "col-6"
+  
+}
+
+function GombokLerakasa(){
+  var div = document.getElementById("jatekter-ember");
+  //reset gomb
+  let btn_reset = document.createElement("button");
+  btn_reset.innerHTML = "Reset";
+  btn_reset.title = "Előrő kezdheti a hajó rendezést";  
+  btn_reset.type = "submit";
+  btn_reset.name = "formBtn";
+  btn_reset.setAttribute("id","btn");
+  btn_reset.onclick = function (){
+    location.reload();
+  }
+  div.appendChild(btn_reset);
+  //indítás könnyű módban
+  let btn_es = document.createElement("button");
+  btn_es.innerHTML = "Indítás könnyű módban";
+  btn_es.title = "Elindítja a játékot könnyű módban";
+  btn_es.type = "submit";
+  btn_es.name = "formBtn";
+  btn_es.setAttribute("id","btn");
+  btn_es.onclick = function (){
+    KönnyuBotInditas();
+  }
+  div.appendChild(btn_es);
+  //indítás közepes módban
+  let btn_mid = document.createElement("button");
+  btn_mid.innerHTML = "Indítás közepes módban";
+  btn_mid.title = "Elindítja a játékot közepes módban";
+  btn_mid.type = "submit";
+  btn_mid.name = "formBtn";
+  btn_mid.setAttribute("id","btn");
+  btn_mid.onclick = function (){
+    KözepesBotInditas();
+  }
+  div.appendChild(btn_mid);
+  //indítás emán speciálban
+  let btn_hrd = document.createElement("button");
+  btn_hrd.innerHTML = "Indítás Emán módban";
+  btn_hrd.title = "Elindítja a játékot nehéz módban";
+  btn_hrd.type = "submit";
+  btn_hrd.name = "formBtn";
+  btn_hrd.setAttribute("id","btn");
+  btn_hrd.onclick = function (){
+    NehezBotInditas();
+  }
+  div.appendChild(btn_hrd);
+}
+function KönnyuBotInditas(){
+  //lehet kattintani a táblára
+}
+
+function KözepesBotInditas(){
+  //lehet kattintani a táblára
+}
+
+function NehezBotInditas(){
+  //lehet kattintani a táblára
 }
 
 function main(){
