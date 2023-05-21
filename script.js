@@ -4,8 +4,10 @@ const botJatekter = document.getElementById("jatekter-bot")
 var board = new Array();
 var boardEmber = new Array();
 var szunet= false;
-
+var nehezseg;
 var forgatva = 1;
+var lepes = 0;
+var botLovesei = [];
 
 const hajok = [
   {id:1,hossz:2},
@@ -128,6 +130,7 @@ function KattEmber(td){
               var row = hajoTabla.rows[newRow+1]
               var cell1 = row.cells[newCol+1]
               cell1.style.backgroundColor = "var(--hajoide)"
+              cell1.dataset.hajo=hajo;
               cell1.setAttribute("onclick","")
         }
         shipPlaced = true;
@@ -200,23 +203,89 @@ function nemJoHely(td) {
 
 /* ------------------------------------ Az ember lő a botnak a táblájára ----------------------------------- */
 function Katt(td){
-    if (board[td.dataset.sor-1][td.dataset.oszlop-1] != 0) {
-      let kep = document.createElement("img")
-      kep.src = "talalat.png";
-      td.appendChild(kep);
-      td.style.backgroundColor = "var(--talalat)";
-    }
-    else{
-      let kep = document.createElement("img")
-      kep.src = "explo.png";
-      td.appendChild(kep);
-      td.style.backgroundColor = "var(--marlott)";
-    }
 
-    td.setAttribute("onclick","")
 
+if(!szunet){
+  cim.innerHTML = "A boton a sor"
+  szunet = true;
+  if (board[td.dataset.sor-1][td.dataset.oszlop-1] != 0) {
+    let kep = document.createElement("img")
+    kep.src = "talalat.png";
+    td.appendChild(kep);
+    td.style.backgroundColor = "var(--talalat)";
+  }
+  else{
+    let kep = document.createElement("img")
+    kep.src = "explo.png";
+    td.appendChild(kep);
+    td.style.backgroundColor = "var(--marlott)";
+  }
+  lepes++;
+  td.setAttribute("onclick","")
+  
+  setTimeout(function() {
+    botLoves(nehezseg);
+  }, Math.floor(Math.random() * (5000 - 1000 + 1)) + 1000);
+  
+  }
 }
 
+function randomKordinataGen() {
+  const row = Math.floor(Math.random() * 10);
+  const col = Math.floor(Math.random() * 10);
+  return { row, col };
+}
+
+function lettMarIdeLove(coordinates) {
+  for (const shot of botLovesei) {
+    if (shot.row === coordinates.row && shot.col === coordinates.col) {
+      return false;
+    }
+  }
+  return true;
+}
+
+function botLoves(nehezseg){
+  /* ------------------- nehezseg lehet : konyu,kozep,nehez ------------------- */
+if (nehezseg == "konyu") {
+  let loves;
+  do {
+    loves = randomKordinataGen();
+  } while (!lettMarIdeLove(loves));
+  botLovesei.push(loves);
+
+  console.log(botLovesei);
+
+
+  let tabla = document.getElementsByClassName("hajoTabla")[0];
+  let row = tabla.rows[loves.row+1];
+  console.log(row);
+  let cell = row.cells[loves.col+1];
+  console.log(cell,cell.hajo)
+  if (cell.dataset.hajo == undefined) {
+    let kep = document.createElement("img");
+    kep.src = "explo.png";
+    cell.appendChild(kep);
+    cell.style.backgroundColor = "var(--marlott)";
+  }
+  else{
+    let kep = document.createElement("img");
+    kep.src = "talalat.png";
+    cell.appendChild(kep);
+    cell.style.backgroundColor = "var(--talalat)";
+  }
+
+}
+else if (nehezseg == "kozep"){
+  /* ------------------------------ A rendes bot ------------------------------ */
+}
+else{
+  /* -------------------------------- eman mode ------------------------------- */
+}
+
+szunet = false;
+cim.innerHTML = "Rajtad a sor"
+}
 
 /* ------------------------------------ A függvény ami lerakja a botnak a hajóit ha jó ----------------------------------- */
 function BotHajolerak(hajo) {
@@ -507,6 +576,8 @@ function jatekIndul(){
   
 }
 
+
+/* ----- Kirakja az oldalra a 4 gombot amivel ellehet inditani a jatekot ---- */
 function GombokLerakasa(){
   var div = document.getElementById("jatekter-ember");
   //reset gomb
@@ -553,17 +624,40 @@ function GombokLerakasa(){
     NehezBotInditas();
   }
   div.appendChild(btn_hrd);
+  szunet = true;
 }
 function KönnyuBotInditas(){
-  //lehet kattintani a táblára
+  nehezseg = "konyu";
+  let temp = document.getElementsByTagName("button");
+  for (let i = temp.length - 1; i >= 0; i--) {
+    console.log(temp[i]);
+    temp[i].remove();
+  }
+  szunet = false;
+  cim.innerHTML = "Rajtad a sor"
 }
 
 function KözepesBotInditas(){
-  //lehet kattintani a táblára
+  nehezseg = "kozep";
+  let temp = document.getElementsByTagName("button");
+  for (let i = temp.length - 1; i >= 0; i--) {
+    console.log(temp[i]);
+    temp[i].remove();
+  }
+  szunet = false;
+  cim.innerHTML = "Rajtad a sor"
+
 }
 
 function NehezBotInditas(){
-  //lehet kattintani a táblára
+  nehezseg = "nehez";
+  let temp = document.getElementsByTagName("button");
+  for (let i = temp.length - 1; i >= 0; i--) {
+    console.log(temp[i]);
+    temp[i].remove();
+  }
+  szunet = false;
+  cim.innerHTML = "Rajtad a sor"
 }
 
 function main(){
