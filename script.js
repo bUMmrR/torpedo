@@ -236,9 +236,9 @@ function randomKordinataGen() {
   return { row, col };
 }
 
-function lettMarIdeLove(coordinates) {
+function lettMarIdeLove(kord) {
   for (const shot of botLovesei) {
-    if (shot.row === coordinates.row && shot.col === coordinates.col) {
+    if (shot.row === kord.row && shot.col === kord.col) {
       return false;
     }
   }
