@@ -211,14 +211,28 @@ function HajoMegtalalva(table) {
     var jelenlegSzin = szinek[i % szinek.length];
     setTimeout(function(szin) {
       return function() {
-        table.style.border = "1px solid "+jelenlegSzin;
+        let tabla = table.getElementsByTagName("td")
+        for (let i = 0; i < tabla.length; i++) {
+          if (tabla[i].innerText == "" && i != 0)  {
+            tabla[i].style.border = "1px solid red"
+            
+          }
+          
+        }
       };
     }(jelenlegSzin), delay * i);
   }
 
   // eredeti szin
   setTimeout(function() {
-    table.style.border = "1px solid white";
+    let tabla = table.getElementsByTagName("td")
+    for (let i = 0; i < tabla.length; i++) {
+      if (tabla[i].innerText == "" && i != 0)  {
+        tabla[i].style.border = "1px solid white"
+        
+      }
+      
+    }
     szunet = false;
   }, delay * 2 * szinek.length);
 }
@@ -234,8 +248,9 @@ function Katt(td){
         if (hajok[i].hossz == 0) {
           for (let j = 0; j < board.length; j++) {
             for (let k = 0; k < board[0].length; k++) {
-              if (board[j][k].id = hajo) {
+              if (board[j][k].id == hajo) {
                 let tabla = document.getElementsByClassName("hajoTabla")[1];
+                hajok[hajo-1].hossz = 99;
                 HajoMegtalalva(tabla);
               }
             }
@@ -334,9 +349,48 @@ function botLoves(nehezseg){
   }
   else{
   /* -------------------------------- eman mode ------------------------------- */
+  let loves;
+  for(let i = 0; i<board.length;i++){
+    for (let j = 0; j < board[0].length; j++) {
+      if(board[i][j] != 0){
+        var index = i+1;
+        var jindex = j+1;
+        loves = {index,jindex};
+        board[i][j] = 0;
+      } 
+      
+    }
+  }
+  
+  let tabla = document.getElementsByClassName("hajoTabla")[0];
+  let row = tabla.rows[loves.index];
+  let cell = row.cells[loves.jindex];
+  for (let i = 0; i < board.length; i++) {
+      for (let j = 0; j < board[0].length; j++) {
+        if(board[i][j] != 0){
+          Jatekos_kapott_talalatok++;
+      if (Jatekos_kapott_talalatok == 17) {
+        setTimeout(function() {
+          alert("A bot nyert, szar vagy");
+          location.reload();
+        },200)
+      }
+      let kep = document.createElement("img");
+      kep.src = "talalat.png";
+      cell.appendChild(kep);
+      cell.style.backgroundColor = "var(--talalat)";
+      setTimeout(function() {
+        botLoves(nehezseg);
+      }, Math.floor(Math.random() * (5000 - 1000 + 1)) + 1000);
+        }
+        
+      }
+         }
   }
 
 }
+
+
 
 /* ------------------------------------ A függvény ami lerakja a botnak a hajóit ha jó ----------------------------------- */
 function BotHajolerak(hajo) {

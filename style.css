@@ -33,6 +33,7 @@ td{
     margin: 0px;
     padding: 0px;
     transition: background-color 0.5s ease;
+    transition: border-color 0.5s ease;
 }
 tr{
     border: solid white 1px;
