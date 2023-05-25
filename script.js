@@ -256,7 +256,6 @@ function Katt(td){
             }
           }
         }
-        
       }
       let kep = document.createElement("img")
       kep.src = "talalat.png";
@@ -279,7 +278,7 @@ function Katt(td){
       cim.innerHTML = "A boton a sor";
       setTimeout(function() {
         botLoves(nehezseg);
-      }, Math.floor(Math.random() * (5000 - 1000 + 1)) + 1000);
+      }, 100);
     }
     td.setAttribute("onclick","")
   }
@@ -300,10 +299,41 @@ function lettMarIdeLove(kord) {
   return true;
 }
 
+var vektor = [
+  [0,-1],//fel
+  [-1,0],//jobbra
+  [0,1],//le
+  [-1,0]//balra
+];
+var irany;
+var elsoTalalat;
+var elozoTalalat;
+var talalatokszama;
+
+function elSullyedtE(id, talalatszam){
+  if(id == 5 && talalatszam == 5){ //el süllyedt az 5s hajó
+    return true;
+  }
+  else if(id == 4 && talalatszam == 4){//el süllyedt a 4s hajó
+    return true;
+  }
+  else if(id == 3 && talalatszam == 3){//el süllyedt a 3s hajó
+    return true;  
+  }
+  else if(id == 2 && talalatszam == 3){//el süllyedt a 3s hajó
+   return true; 
+  }
+  else if(id == 1 && talalatszam == 2){//el süllyedt a 2s hajó
+    return true;
+  }
+  else{ // nem süllyedt el semmi
+    return false;
+  }
+}
 
 function botLoves(nehezseg){
   /* ------------------- nehezseg lehet : konyu,kozep,nehez ------------------- */
-  if (nehezseg == "konyu") {
+if (nehezseg == "konyu") {
     let loves;
     do {
       loves = randomKordinataGen();
@@ -346,7 +376,95 @@ function botLoves(nehezseg){
   }
   else if (nehezseg == "kozep"){
   /* ------------------------------ A rendes bot ------------------------------ */
+
+  let loves;
+
+  if (elsoTalalat == undefined) {
+    do {
+      loves = randomKordinataGen();
+    } while (!lettMarIdeLove(loves));
+    botLovesei.push(loves);
   }
+  else{
+    /*-----------------------------ide jön a bot lényege------------------------------*/
+
+    //kezdő irány beállítása ami 
+    if(irany == undefined){
+      irany = 1;
+    }
+    if (elozoTalalat == undefined) {
+      if (elsoTalalat.row == 0) {
+        irany++;;
+      }
+      if (elsoTalalat.col == 0) {
+        irany++;
+      }
+      loves = { row: elsoTalalat.row+vektor[irany][0], col: elsoTalalat.col+vektor[irany][1]};
+    }
+    else{
+      if (elozoTalalat.row == 0) {
+        irany++;;
+      }
+      if (elozoTalalat.col == 0) {
+        irany++;
+      }
+      loves = { row: elozoTalalat.row+vektor[irany][0], col: elozoTalalat.col+vektor[irany][1]};
+    }
+    //ide lő következőleg embertabla[elsotalat(x),elsotalalat(y+1)]
+
+  }
+
+
+
+  console.log(botLovesei);
+
+
+  let tabla = document.getElementsByClassName("hajoTabla")[0];
+  let row = tabla.rows[loves.row+1];
+  let cell = row.cells[loves.col+1];
+  if (cell.dataset.hajo == undefined) { //van e hajó (talált e?)
+    let kep = document.createElement("img");
+    kep.src = "explo.png";
+    cell.appendChild(kep);
+    cell.style.backgroundColor = "var(--marlott)";
+    cim.innerHTML = "Rajtad a sor";
+    szunet = false;
+    if (elsoTalalat != undefined) {
+      irany++;
+      elozoTalalat = undefined;
+    }
+  }
+  else{
+    talalatokszama++;
+    if (elsoTalalat == undefined) {
+      elsoTalalat = loves;
+      elozoTalalat = loves;
+    }
+    if (elSullyedtE(cell.dataset.hajo,talalatokszama)){
+      elsoTalalat = undefined;
+      elozoTalalat = undefined;
+      irany = undefined;
+    }
+    if (elsoTalalat!= undefined) {
+      elozoTalalat = loves;
+    }
+    Jatekos_kapott_talalatok++;
+    if (Jatekos_kapott_talalatok == 17) {
+      setTimeout(function() {
+        alert("A bot nyert");
+        location.reload();
+      },200)
+    }
+    let kep = document.createElement("img");
+    kep.src = "talalat.png";
+    cell.appendChild(kep);
+    cell.style.backgroundColor = "var(--talalat)";
+    setTimeout(function() {
+      botLoves(nehezseg);
+    }, 100); //random időn belül újra megvan hívva
+  }
+  }
+
   else{
   /* -------------------------------- eman mode ------------------------------- */
   let loves = nehezBotLoves();
@@ -522,9 +640,6 @@ function BotHajoGen(){
 
 /* ----------------------------------- Legenerálja a kiválasztható hajókat ---------------------------------- */
 function generelasHajo(){
-
-
-
   let table = document.createElement("table");
   let hajo = 5;
   let elsoAlkalom = true;
