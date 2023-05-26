@@ -303,12 +303,12 @@ var vektor = [
   [0,-1],//fel
   [-1,0],//jobbra
   [0,1],//le
-  [-1,0]//balra
+  [1,0]//balra
 ];
 var irany;
 var elsoTalalat;
 var elozoTalalat;
-var talalatokszama;
+var talalatokszama = 0;
 
 function elSullyedtE(id, talalatszam){
   if(id == 5 && talalatszam == 5){ //el süllyedt az 5s hajó
@@ -383,7 +383,6 @@ if (nehezseg == "konyu") {
     do {
       loves = randomKordinataGen();
     } while (!lettMarIdeLove(loves));
-    botLovesei.push(loves);
   }
   else{
     /*-----------------------------ide jön a bot lényege------------------------------*/
@@ -415,7 +414,7 @@ if (nehezseg == "konyu") {
   }
 
 
-
+  botLovesei.push(loves);
   console.log(botLovesei);
 
 
@@ -444,6 +443,7 @@ if (nehezseg == "konyu") {
       elsoTalalat = undefined;
       elozoTalalat = undefined;
       irany = undefined;
+      talalatokszama = 0;
     }
     if (elsoTalalat!= undefined) {
       elozoTalalat = loves;
