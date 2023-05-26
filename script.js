@@ -19,6 +19,18 @@ const hajok = [
 ]
 
 
+var vektor = [
+  [0,-1],//fel,  lehet Balra?
+  [-1,0],//jobbra,
+  [0,1],//le, lehet Jobbra?
+  [1,0]//balra,
+];
+var irany;
+var elsoTalalat;
+var elozoTalalat;
+var talalatokszama = 0;
+
+
 //1x5
 //1x4
 //2x3
@@ -77,7 +89,7 @@ function generalas(embere) {
 
 /* --------------- Ez az ember saját táblájának az onClick-je --------------- */
 function KattEmber(td){
-  if(document.getElementById("cim").innerHTML == "Hajók lerakása" && !szunet){
+    if(document.getElementById("cim").innerHTML == "Hajók lerakása" && !szunet){
       let jelenlegHajo = document.getElementById("jelenlegHajo");
       console.log(jelenlegHajo);
       var row = jelenlegHajo.rows[0];
@@ -85,9 +97,9 @@ function KattEmber(td){
       var hajo = cell.dataset.hajo;
       var x = Number(td.dataset.sor);
       var y = Number(td.dataset.oszlop);
-      if (hajo != undefined) {
+      if (hajo != undefined && hajo != "undefined") {
         var rakhato = true;
-        irany = forgatva % 2;
+        var irany = forgatva % 2;
         for (let i = 0; i < hajok[hajo-1].hossz; i++) {
           let newRow = undefined;
           if (irany == 1) {
@@ -155,7 +167,7 @@ function KattEmber(td){
           jatekIndul();
         }
         hajoPozNull();
-        cell.dataset.hajo = 0;
+        cell.dataset.hajo = undefined;
       }
     }
     else{
@@ -299,16 +311,6 @@ function lettMarIdeLove(kord) {
   return true;
 }
 
-var vektor = [
-  [0,-1],//fel
-  [-1,0],//jobbra
-  [0,1],//le
-  [1,0]//balra
-];
-var irany;
-var elsoTalalat;
-var elozoTalalat;
-var talalatokszama = 0;
 
 function elSullyedtE(id, talalatszam){
   if(id == 5 && talalatszam == 5){ //el süllyedt az 5s hajó
@@ -377,6 +379,20 @@ if (nehezseg == "konyu") {
   else if (nehezseg == "kozep"){
   /* ------------------------------ A rendes bot ------------------------------ */
 
+
+  // problemák:
+  /*
+  todo    A bot tud a betükre illetve a számokra löni,
+  */
+  // talán fixel problémák:
+  /*
+    ?fix:   Nem tud a bot le/fel lőni,
+    ?fix:   Ha a bot a hajo végére ér, és nem sülyedt el, de van lőve a hajo végére ahova most lőne, akkor a következő körben nem csinál semmit 
+  */
+
+  console.log(elozoTalalat);
+  console.log(elsoTalalat);
+  console.log(irany,vektor[irany-1])
   let loves;
 
   if (elsoTalalat == undefined) {
@@ -391,31 +407,51 @@ if (nehezseg == "konyu") {
     if(irany == undefined){
       irany = 1;
     }
+
+    console.log(elozoTalalat);
+    console.log(elsoTalalat);
+    console.log("Irány :",irany)
+
     if (elozoTalalat == undefined) {
-      if (elsoTalalat.row == 0) {
-        irany++;;
-      }
-      if (elsoTalalat.col == 0) {
-        irany++;
-      }
-      loves = { row: elsoTalalat.row+vektor[irany][0], col: elsoTalalat.col+vektor[irany][1]};
+      // if (elsoTalalat.row == 0) {
+      //   irany++;
+      // }
+      // if (elsoTalalat.col == 0) {
+      //   irany++;
+      // }
+      loves = { row: parseInt(elsoTalalat.row) + vektor[irany - 1][0], col: parseInt(elsoTalalat.col) + vektor[irany - 1][1]};
     }
     else{
-      if (elozoTalalat.row == 0) {
-        irany++;;
-      }
-      if (elozoTalalat.col == 0) {
-        irany++;
-      }
-      loves = { row: elozoTalalat.row+vektor[irany][0], col: elozoTalalat.col+vektor[irany][1]};
+      // if (elozoTalalat.row == 0) {
+      //   irany++;
+      // }
+      // if (elozoTalalat.col == 0) {
+      //   irany++;
+      // }
+      console.log(irany,vektor[irany-1])
+      console.log(elozoTalalat.row + vektor[irany - 1][0],elozoTalalat.col + vektor[irany - 1][1])
+      console.log(parseInt(elozoTalalat.row) + vektor[irany - 1][0],parseInt(elozoTalalat.col) + vektor[irany - 1][1])
+      loves = { row: parseInt(elozoTalalat.row) + vektor[irany - 1][0], col: parseInt(elozoTalalat.col) + vektor[irany - 1][1]};
     }
+    if (hajoVaneUtbaEmber(loves.row,loves.sor)) {
+      botLovesei.push(loves);
+      botLoves("kozep")
+    }
+    console.log(loves);
     //ide lő következőleg embertabla[elsotalat(x),elsotalalat(y+1)]
 
   }
-
+  if (!lettMarIdeLove(loves)) {
+    console.log("duplikált");
+    irany++;
+    elozoTalalat = undefined;
+    botLoves("kozep");
+    return;
+  }
 
   botLovesei.push(loves);
   console.log(botLovesei);
+  console.log(irany);
 
 
   let tabla = document.getElementsByClassName("hajoTabla")[0];
@@ -461,7 +497,7 @@ if (nehezseg == "konyu") {
     cell.style.backgroundColor = "var(--talalat)";
     setTimeout(function() {
       botLoves(nehezseg);
-    }, 100); //random időn belül újra megvan hívva
+    }, 1000); //random időn belül újra megvan hívva
   }
   }
 
