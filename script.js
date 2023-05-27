@@ -382,10 +382,12 @@ if (nehezseg == "konyu") {
 
   // problemák:
   /*
-  todo    A bot tud a betükre illetve a számokra löni,
+  todo    A bot ne lőjőn már meglőtt hajó mellé
+  todo    Ha már elkezdtünk 1 irányba lőni és volt találat, de a eloző nem volt találát akkor az irány 2-vel nőjön, vagyis forduljon meg
   */
   // talán fixel problémák:
   /*
+    ?fix:   A bot tud a betükre illetve a számokra löni
     ?fix:   Nem tud a bot le/fel lőni,
     ?fix:   Ha a bot a hajo végére ér, és nem sülyedt el, de van lőve a hajo végére ahova most lőne, akkor a következő körben nem csinál semmit 
   */
@@ -419,7 +421,7 @@ if (nehezseg == "konyu") {
       // if (elsoTalalat.col == 0) {
       //   irany++;
       // }
-      loves = { row: parseInt(elsoTalalat.row) + vektor[irany - 1][0], col: parseInt(elsoTalalat.col) + vektor[irany - 1][1]};
+      loves = { row: parseInt(elsoTalalat.row) + vektor[irany % 4][0], col: parseInt(elsoTalalat.col) + vektor[irany % 4][1]};
     }
     else{
       // if (elozoTalalat.row == 0) {
@@ -429,13 +431,19 @@ if (nehezseg == "konyu") {
       //   irany++;
       // }
       console.log(irany,vektor[irany-1])
-      console.log(elozoTalalat.row + vektor[irany - 1][0],elozoTalalat.col + vektor[irany - 1][1])
-      console.log(parseInt(elozoTalalat.row) + vektor[irany - 1][0],parseInt(elozoTalalat.col) + vektor[irany - 1][1])
-      loves = { row: parseInt(elozoTalalat.row) + vektor[irany - 1][0], col: parseInt(elozoTalalat.col) + vektor[irany - 1][1]};
+      console.log(elozoTalalat.row + vektor[irany % 4][0],elozoTalalat.col + vektor[irany % 4 ][1])
+      console.log(parseInt(elozoTalalat.row) + vektor[irany % 4][0],parseInt(elozoTalalat.col) + vektor[irany % 4][1])
+      loves = { row: parseInt(elozoTalalat.row) + vektor[irany % 4][0], col: parseInt(elozoTalalat.col) + vektor[irany % 4][1]};
     }
     if (hajoVaneUtbaEmber(loves.row,loves.sor)) {
       botLovesei.push(loves);
       botLoves("kozep")
+      return;
+    }
+    if (loves.row == -1  || loves.row == 10 || loves.col == -1 || loves.col == 10) {
+      irany++;
+      botLoves("kozep")
+      return;
     }
     console.log(loves);
     //ide lő következőleg embertabla[elsotalat(x),elsotalalat(y+1)]
