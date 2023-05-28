@@ -3,6 +3,7 @@ const emberJatekter = document.getElementById("jatekter-ember")
 const botJatekter = document.getElementById("jatekter-bot")
 var board = new Array();
 var boardEmber = new Array();
+var botTalaltLovesei = new Array();
 var szunet= false;
 var nehezseg;
 var forgatva = 1;
@@ -18,24 +19,17 @@ const hajok = [
   {id:5,hossz:5},
 ]
 
-
 var vektor = [
-  [0,-1],//fel,  lehet Balra?
-  [-1,0],//jobbra,
-  [0,1],//le, lehet Jobbra?
-  [1,0]//balra,
+  [0,-1],
+  [-1,0],
+  [0,1],
+  [1,0]
 ];
+
 var irany;
 var elsoTalalat;
 var elozoTalalat;
 var talalatokszama = 0;
-
-
-//1x5
-//1x4
-//2x3
-//1x2
-
 
 /* -------------- Ez generálja a 2 tablat amibe a játok folyik -------------- */
 function generalas(embere) { 
@@ -86,12 +80,10 @@ function generalas(embere) {
     table.classList+= "hajoTabla"
     jatekter.appendChild(table);
 }
-
 /* --------------- Ez az ember saját táblájának az onClick-je --------------- */
 function KattEmber(td){
     if(document.getElementById("cim").innerHTML == "Hajók lerakása" && !szunet){
       let jelenlegHajo = document.getElementById("jelenlegHajo");
-      console.log(jelenlegHajo);
       var row = jelenlegHajo.rows[0];
       var cell = row.cells[0];
       var hajo = cell.dataset.hajo;
@@ -147,10 +139,8 @@ function KattEmber(td){
               cell1.setAttribute("onclick","")
         }
         shipPlaced = true;
-        console.log(boardEmber);
 
         var tabla = document.getElementsByClassName("maradekTabla")[1]
-        console.log(tabla)
         for (let i = 0; i < tabla.rows.length; i++) {
           for (let j = 0; j < tabla.rows[0].cells.length; j++) {
             var row = tabla.rows[i]
@@ -175,7 +165,6 @@ function KattEmber(td){
     }
   }
 }
-
 /* ---------- Megnézni hogy a felhaszáló lerakta-e az ősszes hajót ---------- */
 function osszeshajoLerak(tabla){
   var levan = true;
@@ -184,14 +173,12 @@ function osszeshajoLerak(tabla){
       var row = tabla.rows[i];
       var cell = row.cells[j];
       if (cell.style.backgroundColor != "grey" && cell.style.backgroundColor != ""){
-        console.log(cell.style.backgroundColor);
         levan = false;
       }
     }
   }
   return levan;
 }
-
 /* ------------------- Elkezd villogni ha nem jó a lerakás ------------------ */
 function nemJoHely(td) {
   szunet = true;
@@ -207,17 +194,16 @@ function nemJoHely(td) {
     }(jelenlegSzin), delay * i);
   }
 
-  // eredeti szin
   setTimeout(function() {
     td.style.backgroundColor = "var(--semmi)";
     szunet = false;
   }, delay * 2 * szinek.length);
 }
-
+/* ------------- Ha elsülyedt a hajó akkor villanjon fel a tábla ------------ */
 function HajoMegtalalva(table) {
   szunet = true;
   var szinek = ["red", "var(--semmi)"];
-  var delay = 500; // ms
+  var delay = 500;
 
   for (var i = 0; i < 2 * szinek.length; i++) {
     var jelenlegSzin = szinek[i % szinek.length];
@@ -235,7 +221,6 @@ function HajoMegtalalva(table) {
     }(jelenlegSzin), delay * i);
   }
 
-  // eredeti szin
   setTimeout(function() {
     let tabla = table.getElementsByTagName("td")
     for (let i = 0; i < tabla.length; i++) {
@@ -248,13 +233,11 @@ function HajoMegtalalva(table) {
     szunet = false;
   }, delay * 2 * szinek.length);
 }
-
 /* ------------------------------------ Az ember lő a botnak a táblájára ----------------------------------- */
 function Katt(td){
   if(!szunet){
     if (board[td.dataset.sor-1][td.dataset.oszlop-1] != 0) {
       let hajo = board[td.dataset.sor-1][td.dataset.oszlop-1].id;
-      console.log(hajo);
       hajok[hajo-1].hossz--;
       for (let i = 0; i < hajok.length; i++) {
         if (hajok[i].hossz == 0) {
@@ -295,13 +278,13 @@ function Katt(td){
     td.setAttribute("onclick","")
   }
 }
-
+/* ------------------------ Random add egy kordinátát ----------------------- */
 function randomKordinataGen() {
   const row = Math.floor(Math.random() * 10);
   const col = Math.floor(Math.random() * 10);
   return { row, col };
 }
-
+/* -------------------- Megnézi hogy a bot már lőtt-e ide ------------------- */
 function lettMarIdeLove(kord) {
   for (const shot of botLovesei) {
     if (shot.row === kord.row && shot.col === kord.col) {
@@ -310,8 +293,7 @@ function lettMarIdeLove(kord) {
   }
   return true;
 }
-
-
+/* --------------------- Megnézi hogy a hajó elsülyedt-e -------------------- */
 function elSullyedtE(id, talalatszam){
   if(id == 5 && talalatszam == 5){ //el süllyedt az 5s hajó
     return true;
@@ -332,18 +314,15 @@ function elSullyedtE(id, talalatszam){
     return false;
   }
 }
-
+/* ----------------------- A bot lővesének a függvénye ---------------------- */
 function botLoves(nehezseg){
   /* ------------------- nehezseg lehet : konyu,kozep,nehez ------------------- */
-if (nehezseg == "konyu") {
+  if (nehezseg == "konyu") {
     let loves;
     do {
       loves = randomKordinataGen();
     } while (!lettMarIdeLove(loves));
     botLovesei.push(loves);
-
-    console.log(botLovesei);
-
 
     let tabla = document.getElementsByClassName("hajoTabla")[0];
     let row = tabla.rows[loves.row+1];
@@ -382,84 +361,71 @@ if (nehezseg == "konyu") {
 
   // problemák:
   /*
-  todo    A bot ne lőjőn már meglőtt hajó mellé
-  todo    Ha már elkezdtünk 1 irányba lőni és volt találat, de a eloző nem volt találát akkor az irány 2-vel nőjön, vagyis forduljon meg
   */
-  // talán fixel problémák:
-  /*
+ // talán fixelt problémák:
+ /*
+    ?fix: A bot ne lőjőn már meglőtt hajó mellé
+    ?fix: Ha már elkezdtünk 1 irányba lőni és volt találat, de a eloző nem volt találát akkor az irány 2-vel nőjön, vagyis forduljon meg
     ?fix:   A bot tud a betükre illetve a számokra löni
     ?fix:   Nem tud a bot le/fel lőni,
     ?fix:   Ha a bot a hajo végére ér, és nem sülyedt el, de van lőve a hajo végére ahova most lőne, akkor a következő körben nem csinál semmit 
   */
 
-  console.log(elozoTalalat);
-  console.log(elsoTalalat);
-  console.log(irany,vektor[irany-1])
   let loves;
+  if ((elozoTalalat == undefined && elsoTalalat!= undefined) && talalatokszama!= 1 ) {
+    irany++;
+  }
 
   if (elsoTalalat == undefined) {
     do {
       loves = randomKordinataGen();
     } while (!lettMarIdeLove(loves));
+    if (hajoMelletLo(loves.row,loves.col)) {
+      botLovesei.push(loves);
+      botLoves(nehezseg);
+      return;
+    }
   }
   else{
-    /*-----------------------------ide jön a bot lényege------------------------------*/
 
     //kezdő irány beállítása ami 
     if(irany == undefined){
       irany = 1;
     }
 
-    console.log(elozoTalalat);
-    console.log(elsoTalalat);
-    console.log("Irány :",irany)
 
     if (elozoTalalat == undefined) {
-      // if (elsoTalalat.row == 0) {
-      //   irany++;
-      // }
-      // if (elsoTalalat.col == 0) {
-      //   irany++;
-      // }
       loves = { row: parseInt(elsoTalalat.row) + vektor[irany % 4][0], col: parseInt(elsoTalalat.col) + vektor[irany % 4][1]};
     }
     else{
-      // if (elozoTalalat.row == 0) {
-      //   irany++;
-      // }
-      // if (elozoTalalat.col == 0) {
-      //   irany++;
-      // }
-      console.log(irany,vektor[irany-1])
-      console.log(elozoTalalat.row + vektor[irany % 4][0],elozoTalalat.col + vektor[irany % 4 ][1])
-      console.log(parseInt(elozoTalalat.row) + vektor[irany % 4][0],parseInt(elozoTalalat.col) + vektor[irany % 4][1])
       loves = { row: parseInt(elozoTalalat.row) + vektor[irany % 4][0], col: parseInt(elozoTalalat.col) + vektor[irany % 4][1]};
     }
     if (hajoVaneUtbaEmber(loves.row,loves.sor)) {
       botLovesei.push(loves);
-      botLoves("kozep")
+      botLoves(nehezseg)
       return;
     }
     if (loves.row == -1  || loves.row == 10 || loves.col == -1 || loves.col == 10) {
       irany++;
-      botLoves("kozep")
+      botLoves(nehezseg)
       return;
     }
-    console.log(loves);
+
+
+
+
     //ide lő következőleg embertabla[elsotalat(x),elsotalalat(y+1)]
 
   }
   if (!lettMarIdeLove(loves)) {
-    console.log("duplikált");
     irany++;
     elozoTalalat = undefined;
-    botLoves("kozep");
+    botLoves(nehezseg);
     return;
   }
 
   botLovesei.push(loves);
-  console.log(botLovesei);
-  console.log(irany);
+
 
 
   let tabla = document.getElementsByClassName("hajoTabla")[0];
@@ -478,6 +444,7 @@ if (nehezseg == "konyu") {
     }
   }
   else{
+    botTalaltLovesei[loves.row][loves.col] = 1
     talalatokszama++;
     if (elsoTalalat == undefined) {
       elsoTalalat = loves;
@@ -513,7 +480,7 @@ if (nehezseg == "konyu") {
   /* -------------------------------- eman mode ------------------------------- */
   let loves = nehezBotLoves();
 
-  console.log(loves);
+
   if (loves == undefined) {
     alert("A bot nyert,");
     location.reload();
@@ -553,10 +520,22 @@ if (nehezseg == "konyu") {
   }
 
 }
+/* -------- Megnézi hogy a bot egy már megtalált hajó mellé akar lőni ------- */
+function hajoMelletLo(sor,oszlop){
+  for (let i = -1; i < 2; i++) {
+    for (let j = -1; j < 2; j++) {
+      if ((sor + i >= 0 && sor + i < 10 && oszlop + j >= 0 && oszlop + j < 10) && (!(i == 0 && j == 0) && botTalaltLovesei[sor + i][oszlop + j] !== 0)) {
+          return true;
+      }
+    }
+  }
+  return false;
+}
+/* ---------- Az emán mód bot-nak ez adja visza hol van a kövi hajó --------- */
 function nehezBotLoves(){
   for(let i = 0; i<board.length;i++){
     for (let j = 0; j < board[0].length; j++) {
-      console.log(boardEmber[i][j]);
+
       if(boardEmber[i][j] != 0){
         var index = i+1;
         var jindex = j+1;
@@ -567,19 +546,14 @@ function nehezBotLoves(){
     }
   }
 }
-
-
 /* ------------------------------------ A függvény ami lerakja a botnak a hajóit ha jó ----------------------------------- */
 function BotHajolerak(hajo) {
   var shipLength = hajo.hossz
   let shipPlaced = false;
-  var temp = 0;
   while (!shipPlaced) {
 
     const row = Math.floor(Math.random() * 10);
     const col = Math.floor(Math.random() * 10);
-
-    //(0 = horizontal, 1 = vertical)
     const irany = Math.floor(Math.random() * 2);
 
     let rakhato = true;
@@ -625,7 +599,6 @@ function BotHajolerak(hajo) {
     }
   }
 }
-
 /* --------- Megnézi hogy letudná-e rakni a jelenlegi helyre a hajót a botnak -------- */
 function hajoVaneUtba(sor, oszlop) {
   for (let i = -1; i < 2; i++) {
@@ -638,7 +611,6 @@ function hajoVaneUtba(sor, oszlop) {
   return false;
 }
 /* --------- Megnézi hogy letudná-e rakni a jelenlegi helyre a hajót az embernek -------- */
-
 function hajoVaneUtbaEmber(sor, oszlop) {
   for (let i = -1; i < 2; i++) {
     for (let j = -1; j < 2; j++) {
@@ -648,40 +620,33 @@ function hajoVaneUtbaEmber(sor, oszlop) {
     }
   }
   return false;
-}
-
-  
+} 
 /* ------------------------------------ Feltölti a botnak a tabláját 0-val  ----------------------------------- */
 function BotTablaGen(){
-
-
   board = [];
   for (let i = 0; i < 10; i++) {
     board[i] = new Array(10).fill(0);
   }
 }
-
-
+/* ------------------------------------ Feltölti a botnak a talalatai tabláját 0-val  ----------------------------------- */
+function botTalatTablaGen(){
+  for (let i = 0; i < 10; i++) {
+    botTalaltLovesei[i] = new Array(10).fill(0);
+  }
+}
 /* ------------------------------------ Feltölti az embernek a tabláját 0-val  ----------------------------------- */
-
 function EmberTablaGen(){
   boardEmber = [];
   for (let i = 0; i < 10; i++) {
     boardEmber[i] = new Array(10).fill(0);
   }
 }
-
-
 /* ---------------------------------- Meghivja a függvényt ami a hajokat lerakja a botnak ---------------------------------- */
 function BotHajoGen(){
-  
-
   for (let i = 4; i >= 0; i--) {
     BotHajolerak(hajok[i]);
   }
 }
-
-
 /* ----------------------------------- Legenerálja a kiválasztható hajókat ---------------------------------- */
 function generelasHajo(){
   let table = document.createElement("table");
@@ -691,15 +656,13 @@ function generelasHajo(){
     let tr = document.createElement("tr");
     for (let j = 0; j <= 5; j++) {
       let td = document.createElement("td");
-      if (i % 2 == 0) {
-        
+      if (i % 2 == 0) { 
       }
       else{
         if (elsoAlkalom) {
           hajo--;
           elsoAlkalom = false;
         }
-        console.log(hajo);
         if (j <= hajok[hajo].hossz-1){
           td.style.backgroundColor = "var(--hajoide)";   
           td.dataset.hajo = hajok[hajo].id;
@@ -726,22 +689,16 @@ function generelasHajo(){
   table.classList += "maradekTabla" 
   emberJatekter.appendChild(table);
 }
-
-
 /* ------------------------------------ A forgatás gomb OnClick-je ----------------------------------- */
 function forgat(td){
-
-
   let jelenlegHajo = document.getElementById("jelenlegHajo")
   var row = jelenlegHajo.rows[0];
   var cell = row.cells[0];
-  console.log(cell.dataset.hajo,td.dataset.hajoTemp)
   if (cell.dataset.hajo == td.dataset.hajoTemp) {
     forgatva++;
     hajoPozJelenit(td)
   }
 }
-
 /* ---------------------------- Nulláza a hajopoz --------------------------- */
 function hajoPozNull(){
   let jelenlegHajo = document.getElementById("jelenlegHajo")
@@ -756,9 +713,6 @@ function hajoPozNull(){
 }
 /* ------------------------------------ Megjeleniti a jelenleg kiválasztott hajót a táblájába ----------------------------------- */
 function hajoPozJelenit(td) {
-
-
-
   /* ------------------------------------ Az eddigi pirosozás nullázása ----------------------------------- */
   var elements = document.querySelectorAll('td[data-hajo]');
   for (let i = 0; i < elements.length; i++) {
@@ -768,13 +722,11 @@ function hajoPozJelenit(td) {
     }
   }
 
-
   let jelenlegHajo = document.getElementById("jelenlegHajo")
   let hajo;
 
   /* ------------------------------------ Most forgatásgomb vagy se? ----------------------------------- */
   if (td.dataset.forgat == "true") {
-    console.log(td.dataset.hajoTemp)
     hajo = td.dataset.hajoTemp
   }
   else{
@@ -794,9 +746,7 @@ function hajoPozJelenit(td) {
 
   /* ------------------------------------ a hajó poz nullázása ----------------------------------- */
 
-  console.log(jelenlegHajo)
   hajoPozNull(jelenlegHajo)
-
 
   /* ------------------------------------ a hajó poz mutatása ----------------------------------- */
 
@@ -819,11 +769,8 @@ function hajoPozJelenit(td) {
     }
   }
 }
-
 /* ------------------------------------ Maga a jelenleg kiválasztott hajó táblájának a generálása ----------------------------------- */
 function generalasJelenlegHajo(){
-
-
   let table = document.createElement("table")
   for (let i = 0; i < 6; i++) {
     let tr = document.createElement("tr")
@@ -842,7 +789,6 @@ function generalasJelenlegHajo(){
   table.id = "jelenlegHajo"
   emberJatekter.appendChild(table)
 }
-
 /* ------- Kirakja a második táblázatot, hogy az ember tudjon rá lőni ------- */
 function jatekIndul(){
   GombokLerakasa();
@@ -851,10 +797,7 @@ function jatekIndul(){
   document.getElementsByClassName("maradekTabla")[1].style.display = "none"
   document.getElementsByClassName("col-12")[0].classList= "col-6"
   document.getElementsByClassName("col-0")[0].classList= "col-6"
-  
 }
-
-
 /* ----- Kirakja az oldalra a 4 gombot amivel ellehet inditani a jatekot ---- */
 function GombokLerakasa(){
   var div = document.getElementById("jatekter-ember");
@@ -904,43 +847,42 @@ function GombokLerakasa(){
   div.appendChild(btn_hrd);
   szunet = true;
 }
+/* --------------------- belállitja a nehézséget könyüre -------------------- */
 function KönnyuBotInditas(){
   nehezseg = "konyu";
   let temp = document.getElementsByTagName("button");
   for (let i = temp.length - 1; i >= 0; i--) {
-    console.log(temp[i]);
     temp[i].remove();
   }
   szunet = false;
   cim.innerHTML = "Rajtad a sor"
 }
-
+/* --------------------- belállitja a nehézséget középre -------------------- */
 function KözepesBotInditas(){
   nehezseg = "kozep";
   let temp = document.getElementsByTagName("button");
   for (let i = temp.length - 1; i >= 0; i--) {
-    console.log(temp[i]);
     temp[i].remove();
   }
   szunet = false;
   cim.innerHTML = "Rajtad a sor"
 
 }
-
+/* --------------------- belállitja a nehézséget nehézre -------------------- */
 function NehezBotInditas(){
   nehezseg = "nehez";
   let temp = document.getElementsByTagName("button");
   for (let i = temp.length - 1; i >= 0; i--) {
-    console.log(temp[i]);
     temp[i].remove();
   }
   szunet = false;
   cim.innerHTML = "Rajtad a sor"
 }
-
+/* ---------------------------------- main ---------------------------------- */
 function main(){
   BotTablaGen();
   EmberTablaGen();
+  botTalatTablaGen();
   BotHajoGen();
   generalas("ember");
   generalas("bot");
