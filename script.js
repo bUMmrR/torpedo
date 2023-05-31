@@ -351,7 +351,7 @@ function botLoves(nehezseg){
       cell.style.backgroundColor = "var(--talalat)";
       setTimeout(function() {
         botLoves(nehezseg);
-      }, 100); //random időn belül újra megvan hívva
+      }, Math.floor(Math.random() * (5000 - 1000 + 1)) + 1000); //random időn belül újra megvan hívva
     }
 
   }
@@ -510,6 +510,9 @@ function botLoves(nehezseg){
       kep.src = "talalat.png";
       cell.appendChild(kep);
       cell.style.backgroundColor = "var(--talalat)";
+      // setTimeout(function() {
+      //   botLoves(nehezseg);
+      // }, Math.floor(Math.random() * (5000 - 1000 + 1)) + 1000);
       setTimeout(function(){
         botLoves(nehezseg);
       },100)
